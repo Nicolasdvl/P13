@@ -5,11 +5,10 @@ from ..models import Tweets
 
 class TestModels(TestCase):
     def setUp(self) -> None:
-        self.tweet_from_tweepy = Tweet()
-        self.tweet_from_tweepy.id = "123456789"
-        self.tweet_from_tweepy.data = {
+        self.tweet_id = "123456789"
+        self.tweet_data = {
             "author_id": "123",
-            "id": self.tweet_from_tweepy.id,
+            "id": self.tweet_id,
             "public_metrics": {
                 "retweet_count": 28,
                 "reply_count": 2,
@@ -20,6 +19,7 @@ class TestModels(TestCase):
             "created_at": "2022-09-14T15:09:59.000Z",
             "lang": "fr",
         }
+        self.tweet_from_tweepy = Tweet(self.tweet_data)
 
     def test_tweets_insert(self) -> None:
         """
@@ -32,4 +32,4 @@ class TestModels(TestCase):
         # Act
         tweets_model.insert(self.tweet_from_tweepy)
         # Assert
-        tweets_model.objects.get(id=self.tweet_from_tweepy.id)
+        Tweets.objects.get(id=self.tweet_id)

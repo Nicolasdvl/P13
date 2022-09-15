@@ -28,10 +28,10 @@ class Tweets(models.Model):
         """Insert tweet and author if not already exist."""
         try:  # Check if tweet already exist
             tweet = Tweets.objects.get(id=tweet.id)
-        except Tweets.DoesNotExist:  # Insert tweet
+        except ObjectDoesNotExist:  # Insert tweet
             try:  # Check if author already exist
                 author = TwitterUser.objects.get(id=tweet.author_id)
-            except TwitterUser.DoesNotExist:  # Insert author
+            except ObjectDoesNotExist:  # Insert author
                 author = TwitterUser(id=tweet.author_id)
                 author.save()
             tweet.data["author_id"] = author
