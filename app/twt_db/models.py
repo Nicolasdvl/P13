@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.query import QuerySet
 
 
 class TwitterUser(models.Model):
@@ -41,7 +42,7 @@ class Tweets(models.Model):
             new_tweet = Tweets(**tweet.data)
             new_tweet.save()
 
-    def get_tweets_about(self, query: str) -> list[object] | None:
+    def get_tweets_about(self, query: str) -> QuerySet:
         try:
             tweets = Tweets.objects.filter(text__icontains=query)
         except ObjectDoesNotExist:
