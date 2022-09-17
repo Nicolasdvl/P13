@@ -20,6 +20,9 @@ class Tweets(models.Model):
     last_modification = models.DateTimeField(auto_now=True)
     public_metrics = models.CharField(max_length=500)
     referenced_tweets = models.CharField(max_length=500)
+    conversation_id = models.BigIntegerField(null=True)
+    in_reply_to_user_id = models.BigIntegerField(null=True)
+    source = models.CharField(max_length=280, null=True)
 
     def __str__(self):
         return f"tweet: {self.id}"
@@ -37,3 +40,10 @@ class Tweets(models.Model):
             tweet.data["author_id"] = author
             new_tweet = Tweets(**tweet.data)
             new_tweet.save()
+
+    def get_tweets_about(self, query: str) -> list[object] | None:
+        try:
+            tweets = Tweets.objects.filter(text__icontains=query)
+        except ObjectDoesNotExist:
+            return None
+        return tweets

@@ -15,7 +15,10 @@ class Parser:
     def __init__(self) -> None:
         """Initialize tweepy.Client."""
         self.client = tweepy.Client(os.environ.get("TWITTER_BEARER"))
-        self.tweet_fields = "id,author_id,text,lang,created_at,public_metrics"
+        self.tweet_fields = (
+            "id,author_id,text,lang,created_at,public_metrics,"
+            "source,in_reply_to_user_id,conversation_id,referenced_tweets"
+        )
 
     def get_fr_tweets_about(
         self, query: str, max_result=10
