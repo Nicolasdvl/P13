@@ -1,0 +1,22 @@
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <h1>Hello</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="search" placeholder="#hashtag, sujet..." name="q">
+        <button type="submit" action=""><img href="" alt="Rechercher"></button>
+    </form>
+    {% if tweets %}
+    {% for tweet in tweets %}
+    {{tweet.author_id}} <br>
+    {{tweet.text}} <br> <br>
+    {% endfor %}
+    {% endif %}
+</body>
+
+</html>

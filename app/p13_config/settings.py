@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "twt_db.apps.TwtDbConfig",
     "twt_api.apps.TwtApiConfig",
+    "app_site.apps.AppSiteConfig",
 ]
 
 MIDDLEWARE = [
