@@ -10,11 +10,9 @@ def index(request):
         tweets = Tweets()
         parser = Parser()
         tweets = tweets.get_tweets_about(query)
-        if tweets:
-            context["tweets"] = tweets
-        else:
+        if not tweets:
             tweets = parser.get_fr_tweets_about(query)
-            context["tweets"] = tweets
+        context["tweets"] = tweets
         return render(request, "index.html", context=context)
     if request.method == "GET":
         return render(request, "index.html", context=context)
