@@ -7,12 +7,14 @@ def index(request):
     context = {}
     if request.method == "POST":
         query = request.POST.get("q")
-        tweets = Tweets()
+        db_tweets = Tweets()
         parser = Parser()
-        tweets = tweets.get_tweets_about(query)
+        tweets = db_tweets.get_tweets_about(query)
         if not tweets:
             tweets = parser.get_fr_tweets_about(query)
         context["tweets"] = tweets
+        for tweet in tweets:
+            db_tweets.insert(tweet)
         return render(request, "index.html", context=context)
     if request.method == "GET":
         return render(request, "index.html", context=context)
