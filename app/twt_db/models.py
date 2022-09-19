@@ -43,8 +43,4 @@ class Tweets(models.Model):
             new_tweet.save()
 
     def get_tweets_about(self, query: str) -> QuerySet:
-        try:
-            tweets = Tweets.objects.filter(text__icontains=query)
-        except ObjectDoesNotExist:
-            return None
-        return tweets
+        return Tweets.objects.filter(text__icontains=query)
