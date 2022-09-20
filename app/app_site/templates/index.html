@@ -17,6 +17,17 @@
     {{tweet.text}} <br> <br>
     {% endfor %}
     {% endif %}
+
+    {% if conversations %}
+    {% for conversation in conversations %}
+    <h2>CONVERSATION</h2>
+    {% for tweet in conversation %}
+    {{tweet.conversation_id}} <br>
+    {{tweet.author_id}} <br>
+    {{tweet.text}} <br> <br>
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
 </body>
 
 </html>
