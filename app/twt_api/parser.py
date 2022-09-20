@@ -1,3 +1,4 @@
+from datetime import datetime
 import tweepy
 import os
 from dotenv import load_dotenv
@@ -21,7 +22,7 @@ class Parser:
         )
 
     def get_fr_tweets_about(
-        self, query: str, max_result=10
+        self, query: str, max_result: int = 10, start_time: datetime = None
     ) -> list | tweepy.TweepyException:
         """
         Return list of tweet object for a query.
@@ -32,7 +33,33 @@ class Parser:
         query += " lang:fr"
         try:
             response = self.client.search_recent_tweets(
-                query, max_results=max_result, tweet_fields=self.tweet_fields
+                query,
+                max_results=max_result,
+                tweet_fields=self.tweet_fields,
+                start_time=start_time,
+            )
+            return response.data
+        except tweepy.TweepyException as e:
+            return e
+
+    def get_conversation(
+        self,
+        conversation_id,
+        max_result: int = 100,
+        start_time: datetime = None,
+    ) -> list | tweepy.TweepyException:
+        """
+        Retrun a list of tweet object for a conversation.
+
+        Tweet attr is defined in self.tweet_fields.
+        """
+        query = f"conversation_id:{conversation_id}"
+        try:
+            response = self.client.search_recent_tweets(
+                query,
+                max_results=max_result,
+                tweet_fields=self.tweet_fields,
+                start_time=start_time,
             )
             return response.data
         except tweepy.TweepyException as e:
