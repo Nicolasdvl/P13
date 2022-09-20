@@ -5,30 +5,36 @@ from twt_api.parser import Parser
 
 def index(request):
     context = {}
-    conversations = []
+    conversations = {}
     if request.method == "POST":
         query = request.POST.get("q")
         db_tweets = Tweets()
         parser = Parser()
-        tweets = db_tweets.get_tweets_about(query)
-        if not tweets:
-            tweets = parser.get_fr_tweets_about(query)
-            for tweet in tweets:
-                if conversation := parser.get_conversation(
-                    tweet.conversation_id
-                ):
-                    conversations.append(conversation)
+        # if exist in db
+        if Tweets.objects.filter(query=query).exists():
+            conversations = db_tweets.get_conversations_about(query)
 
+        # else call api
         else:
-            conversations.extend(
-                db_tweets.get_conversation(tweet.conversation_id)
-                for tweet in tweets
-            )
+            # get tweets
+            tweets = parser.get_fr_tweets_about(query)
+            # get conversations
+            for tweet in tweets:
+                if tweet.conversation_id not in conversations:
+                    if conversation := parser.get_conversation(
+                        tweet.conversation_id
+                    ):
+                        conversations[tweet.conversation_id] = conversation
+                    else:
+                        conversations[tweet.conversation_id] = [tweet]
 
-        context["tweets"] = tweets
+            # insert in db
+            for key, conversation in conversations.items():
+                for conversation_tweet in conversation:
+                    db_tweets.insert(conversation_tweet, query)
+
         context["conversations"] = conversations
-        for tweet in tweets:
-            db_tweets.insert(tweet)
         return render(request, "index.html", context=context)
+
     if request.method == "GET":
         return render(request, "index.html", context=context)
