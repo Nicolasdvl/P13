@@ -24,11 +24,12 @@ class Tweets(models.Model):
     conversation_id = models.BigIntegerField(null=True)
     in_reply_to_user_id = models.BigIntegerField(null=True)
     source = models.CharField(max_length=280, null=True)
+    query = models.CharField(max_length=280)
 
     def __str__(self):
         return f"tweet: {self.id}"
 
-    def insert(self, tweet: object) -> None:
+    def insert(self, tweet: object, query: str) -> None:
         """Insert tweet and author if not already exist."""
         try:  # Check if tweet already exist
             tweet = Tweets.objects.get(id=tweet.id)
@@ -40,10 +41,29 @@ class Tweets(models.Model):
                 author.save()
             tweet.data["author_id"] = author
             new_tweet = Tweets(**tweet.data)
+            new_tweet.query = query
             new_tweet.save()
 
     def get_tweets_about(self, query: str) -> QuerySet:
-        return Tweets.objects.filter(text__icontains=query)
+        """Return tweets about query."""
+        return Tweets.objects.filter(query=query)
 
-    def get_conversation(self, conversation_id) -> QuerySet:
-        return Tweets.objects.filter(conversation_id=conversation_id)
+    def get_conversations_about(self, query: str) -> dict:
+        """
+        Return conversations about query.
+
+        conversations = {
+            conversation_id: [tweet, ...],
+            ...
+        }
+        """
+        conversations = {}
+        tweets = Tweets.objects.filter(
+            query=query
+        )  # .order_by("conversation_id")
+        for tweet in tweets:
+            if tweet.conversation_id not in conversations:
+                conversations[tweet.conversation_id] = [tweet]
+            else:
+                conversations[tweet.conversation_id].append(tweet)
+        return conversations
