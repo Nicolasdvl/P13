@@ -44,3 +44,6 @@ class Tweets(models.Model):
 
     def get_tweets_about(self, query: str) -> QuerySet:
         return Tweets.objects.filter(text__icontains=query)
+
+    def get_conversation(self, conversation_id) -> QuerySet:
+        return Tweets.objects.filter(conversation_id=conversation_id)
