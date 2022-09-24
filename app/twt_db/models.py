@@ -8,7 +8,7 @@ class TwitterUser(models.Model):
     description = models.CharField(max_length=280)
 
     def __str__(self):
-        return f"author: {self.id}"
+        return str(self.id)
 
 
 class Tweets(models.Model):
@@ -63,7 +63,34 @@ class Tweets(models.Model):
         )  # .order_by("conversation_id")
         for tweet in tweets:
             if tweet.conversation_id not in conversations:
-                conversations[tweet.conversation_id] = [tweet]
+
+                conversations[tweet.conversation_id] = [
+                    {
+                        "id": tweet.id,
+                        "author_id": str(tweet.author_id),
+                        "text": tweet.text,
+                        "lang": tweet.lang,
+                        "created_at": str(tweet.created_at),
+                        "public_metrics": tweet.public_metrics,
+                        "referenced_tweets": tweet.referenced_tweets,
+                        "conversation_id": tweet.conversation_id,
+                        "in_reply_to_user_id": tweet.in_reply_to_user_id,
+                        "source": tweet.source,
+                    }
+                ]
             else:
-                conversations[tweet.conversation_id].append(tweet)
+                conversations[tweet.conversation_id].append(
+                    {
+                        "id": tweet.id,
+                        "author_id": str(tweet.author_id),
+                        "text": tweet.text,
+                        "lang": tweet.lang,
+                        "created_at": str(tweet.created_at),
+                        "public_metrics": tweet.public_metrics,
+                        "referenced_tweets": tweet.referenced_tweets,
+                        "conversation_id": tweet.conversation_id,
+                        "in_reply_to_user_id": tweet.in_reply_to_user_id,
+                        "source": tweet.source,
+                    }
+                )
         return conversations

@@ -1,39 +1,35 @@
 from django.shortcuts import render
 from twt_db.models import Tweets
 from twt_api.parser import Parser
+import json
 
 
 def index(request):
     context = {}
     conversations = {}
+
     if request.method == "POST":
         query = request.POST.get("q")
         db_tweets = Tweets()
         parser = Parser()
-        # if exist in db
-        if Tweets.objects.filter(query=query).exists():
-            conversations = db_tweets.get_conversations_about(query)
-
-        # else call api
-        else:
+        # if doesn't exist in db
+        if not Tweets.objects.filter(query=query).exists():
+            temp = []
             # get tweets
             tweets = parser.get_fr_tweets_about(query)
-            # get conversations
             for tweet in tweets:
-                if tweet.conversation_id not in conversations:
+                db_tweets.insert(tweet, query)
+                # get conversations
+                if tweet.conversation_id not in temp:
                     if conversation := parser.get_conversation(
                         tweet.conversation_id
                     ):
-                        conversations[tweet.conversation_id] = conversation
-                    else:
-                        conversations[tweet.conversation_id] = [tweet]
+                        temp.append(tweet.conversation_id)
+                        for conversation_tweet in conversation:
+                            db_tweets.insert(conversation_tweet, query)
 
-            # insert in db
-            for key, conversation in conversations.items():
-                for conversation_tweet in conversation:
-                    db_tweets.insert(conversation_tweet, query)
-
-        context["conversations"] = conversations
+        conversations = db_tweets.get_conversations_about(query)
+        context["conversations_json"] = json.dumps(conversations)
         return render(request, "index.html", context=context)
 
     if request.method == "GET":

@@ -2,6 +2,11 @@
 
 <head>
     <meta charset="utf-8">
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js" type="text/javascript"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-graph.min.js"></script>
+    {% load static %}
+    {{ conversations_json|json_script:"conversations_json" }}
+    <script src="{% static 'charts.js' %}"></script>
 </head>
 
 <body>
@@ -11,19 +16,6 @@
         <input type="search" placeholder="#hashtag, sujet..." name="q">
         <button type="submit" action=""><img href="" alt="Rechercher"></button>
     </form>
-    {% if conversations %}
-    {% for id, conversation in conversations.items %}
-    <h2>CONVERSATION {{id}}</h2>
-    {% for tweet in conversation %}
-    {{tweet.conversation_id}} <br>
-    {{tweet.author_id}} <br>
-    {{tweet.id}} <br>
-    {{tweet.text}} <br>
-    {{tweet.public_metrics}} <br>
-    {{tweet.source}} <br> <br>
-    {% endfor %}
-    {% endfor %}
-    {% endif %}
 </body>
 
 </html>
