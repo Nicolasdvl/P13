@@ -20,10 +20,11 @@ class Tweets(models.Model):
     saved_at = models.DateTimeField(auto_now_add=True)
     last_modification = models.DateTimeField(auto_now=True)
     public_metrics = models.CharField(max_length=500)
-    referenced_tweets = models.CharField(max_length=500)
-    conversation_id = models.BigIntegerField(null=True)
-    in_reply_to_user_id = models.BigIntegerField(null=True)
-    source = models.CharField(max_length=280, null=True)
+    referenced_tweets_id = models.BigIntegerField(null=True)
+    referenced_tweets_type = models.CharField(max_length=280, null=True)
+    conversation_id = models.BigIntegerField(default=0)
+    in_reply_to_user_id = models.BigIntegerField(default=0)
+    source = models.CharField(max_length=280)
     query = models.CharField(max_length=280)
 
     def __str__(self):
@@ -40,6 +41,15 @@ class Tweets(models.Model):
                 author = TwitterUser(id=tweet.author_id)
                 author.save()
             tweet.data["author_id"] = author
+            # FIND A WAY TO DEAL WITH referenced_tweets lenght > 1
+            if tweet.data.get("referenced_tweets"):
+                tweet.data["referenced_tweets_id"] = tweet.data[
+                    "referenced_tweets"
+                ][0]["id"]
+                tweet.data["referenced_tweets_type"] = tweet.data[
+                    "referenced_tweets"
+                ][0]["type"]
+                del tweet.data["referenced_tweets"]
             new_tweet = Tweets(**tweet.data)
             new_tweet.query = query
             new_tweet.save()
@@ -72,7 +82,8 @@ class Tweets(models.Model):
                         "lang": tweet.lang,
                         "created_at": str(tweet.created_at),
                         "public_metrics": tweet.public_metrics,
-                        "referenced_tweets": tweet.referenced_tweets,
+                        "referenced_tweets_id": tweet.referenced_tweets_id,
+                        "referenced_tweets_type": tweet.referenced_tweets_type,
                         "conversation_id": tweet.conversation_id,
                         "in_reply_to_user_id": tweet.in_reply_to_user_id,
                         "source": tweet.source,
@@ -87,7 +98,8 @@ class Tweets(models.Model):
                         "lang": tweet.lang,
                         "created_at": str(tweet.created_at),
                         "public_metrics": tweet.public_metrics,
-                        "referenced_tweets": tweet.referenced_tweets,
+                        "referenced_tweets_id": tweet.referenced_tweets_id,
+                        "referenced_tweets_type": tweet.referenced_tweets_type,
                         "conversation_id": tweet.conversation_id,
                         "in_reply_to_user_id": tweet.in_reply_to_user_id,
                         "source": tweet.source,

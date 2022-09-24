@@ -1,15 +1,26 @@
 function dataForNetwork(conversation) {
     var nodes = [];
     var edges = [];
+    var temp = [];
     var data = {
         nodes: nodes,
         edges: edges,
     };
     for (const tweet of conversation) {
         // TO DO : check if node already exist before push it.
-        data.nodes.push({ id: tweet.id });
-        data.nodes.push({ id: tweet.referenced_tweets });
-        data.edges.push({ from: tweet.id, to: tweet.referenced_tweets });
+        if (!(temp.includes(tweet.id))) {
+            data.nodes.push({ id: tweet.id });
+            temp.push(tweet.id);
+        };
+
+        if (tweet.hasOwnProperty("referenced_tweets_id")) {
+            if (!(temp.includes(tweet.referenced_tweets_id))) {
+                data.nodes.push({ id: tweet.referenced_tweets_id });
+                temp.push(tweet.referenced_tweets_id);
+            };
+            data.edges.push({ from: tweet.id, to: tweet.referenced_tweets_id });
+        };
+
     };
 
     return data;
