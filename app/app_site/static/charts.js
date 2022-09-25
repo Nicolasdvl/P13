@@ -9,7 +9,7 @@ function dataForNetwork(conversation) {
     for (const tweet of conversation) {
         // TO DO : check if node already exist before push it.
         if (!(temp.includes(tweet.id))) {
-            data.nodes.push({ id: tweet.id });
+            data.nodes.push({ id: tweet.id, group: tweet.author_id });
             temp.push(tweet.id);
         };
 
@@ -18,7 +18,7 @@ function dataForNetwork(conversation) {
                 data.nodes.push({ id: tweet.referenced_tweets_id });
                 temp.push(tweet.referenced_tweets_id);
             };
-            data.edges.push({ from: tweet.id, to: tweet.referenced_tweets_id });
+            data.edges.push({ from: tweet.id, to: tweet.referenced_tweets_id, ref_type: tweet.referenced_tweets_type });
         };
 
     };
@@ -34,8 +34,10 @@ anychart.onDocumentReady(function () {
         let conversation = conversations[key];
         var data = dataForNetwork(conversation);
         var chart = anychart.graph(data);
+        chart.nodes().tooltip().format("Tweet {%id} by {%group}");
+        chart.edges().tooltip().format("{%ref_type}");
         let div = document.createElement('div');
-        div.id = "chart" + i;
+        div.id = "chartNetwork" + i;
         document.body.append(div);
         chart.container("chart" + i);
         chart.draw();
