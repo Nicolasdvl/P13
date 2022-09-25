@@ -33,4 +33,10 @@ def index(request):
         return render(request, "index.html", context=context)
 
     if request.method == "GET":
+        query_tags = Tweets.objects.values_list("query", flat=True).distinct()
+        cloud_tag_data = {
+            tag: Tweets.objects.filter(query=tag).count() for tag in query_tags
+        }
+
+        context["cloud_json"] = json.dumps(cloud_tag_data)
         return render(request, "index.html", context=context)

@@ -26,7 +26,8 @@ function dataForNetwork(conversation) {
     return data;
 };
 
-anychart.onDocumentReady(function () {
+
+function drawNetwork() {
     const conversations = JSON.parse(JSON.parse(document.getElementById('conversations_json').textContent));
     let i = 0;
     for (var key in conversations) {
@@ -39,7 +40,32 @@ anychart.onDocumentReady(function () {
         let div = document.createElement('div');
         div.id = "chartNetwork" + i;
         document.body.append(div);
-        chart.container("chart" + i);
+        chart.container("chartNetwork" + i);
         chart.draw();
     };
+};
+
+anychart.onDocumentReady(function () {
+    const tags = JSON.parse(JSON.parse(document.getElementById('cloud_json').textContent));
+    var data = [];
+    for (var key in tags) {
+        data.push({ x: key, value: tags[key] });
+    };
+    var chart = anychart.tagCloud(data);
+    let div = document.createElement('div');
+    chart.fromAngle(0);
+    chart.toAngle(0);
+    chart.listen("pointClick", function (e) {
+        let search = document.getElementById("search_input");
+        let submit = document.getElementById("search_submit");
+        search.value = e.point.get("x");
+        submit.click();
+    });
+    div.id = "chartCloud";
+    document.body.append(div);
+
+    chart.container("chartCloud");
+
+    chart.draw();
+
 });
