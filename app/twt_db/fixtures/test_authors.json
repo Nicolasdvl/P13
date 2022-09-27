@@ -1,0 +1,23 @@
+[
+    {
+        "model": "twt_db.twitteruser",
+        "pk": 21,
+        "fields": {
+            "description": "None"
+        }
+    },
+    {
+        "model": "twt_db.twitteruser",
+        "pk": 22,
+        "fields": {
+            "description": "None"
+        }
+    },
+    {
+        "model": "twt_db.twitteruser",
+        "pk": 23,
+        "fields": {
+            "description": "None"
+        }
+    }
+]

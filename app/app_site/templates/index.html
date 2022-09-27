@@ -1,0 +1,28 @@
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js" type="text/javascript"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-graph.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-tag-cloud.min.js"></script>
+    {% load static %}
+    {% if conversations_json %}
+    {{ conversations_json|json_script:"conversations_json" }}
+    <script src="{% static 'chart_network.js' %}"></script>
+    {% elif cloud_json %}
+    {{ cloud_json|json_script:"cloud_json"}}
+    <script src="{% static 'chart_cloud.js' %}"></script>
+    {% endif %}
+</head>
+
+<body>
+    <h1>Rechercher un sujet à suivre sur twitter</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="search" placeholder="#hashtag, mot-clé..." name="q" id="search_input">
+        <button type="submit" action="" id="search_submit"><img href="" alt="Rechercher"></button>
+    </form>
+</body>
+
+</html>
