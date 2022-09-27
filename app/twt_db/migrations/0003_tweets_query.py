@@ -6,7 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("twt_db", "0002_tweets_conversation_id_tweets_in_reply_to_user_id_and_more"),
+        (
+            "twt_db",
+            "0002_tweets_conversation_id_tweets_in_reply_to_user_id_and_more",
+        ),
     ]
 
     operations = [

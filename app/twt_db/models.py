@@ -82,6 +82,7 @@ class Tweets(models.Model):
         ).distinct()
         for tweet in tweets:
             if tweet.conversation_id not in conversations:
+                ref_type = tweet.referenced_tweets_type  # for PEP8 E501
                 conversations[tweet.conversation_id] = {
                     "tweets": [
                         {
@@ -92,7 +93,7 @@ class Tweets(models.Model):
                             "created_at": str(tweet.created_at),
                             "public_metrics": tweet.public_metrics,
                             "referenced_tweets_id": tweet.referenced_tweets_id,
-                            "referenced_tweets_type": tweet.referenced_tweets_type,
+                            "referenced_tweets_type": ref_type,
                             "conversation_id": tweet.conversation_id,
                             "in_reply_to_user_id": tweet.in_reply_to_user_id,
                             "source": tweet.source,

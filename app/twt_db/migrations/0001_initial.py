@@ -14,14 +14,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="TwitterUser",
             fields=[
-                ("id", models.BigIntegerField(primary_key=True, serialize=False)),
+                (
+                    "id",
+                    models.BigIntegerField(primary_key=True, serialize=False),
+                ),
                 ("description", models.CharField(max_length=280)),
             ],
         ),
         migrations.CreateModel(
             name="Tweets",
             fields=[
-                ("id", models.BigIntegerField(primary_key=True, serialize=False)),
+                (
+                    "id",
+                    models.BigIntegerField(primary_key=True, serialize=False),
+                ),
                 ("text", models.CharField(max_length=280)),
                 ("lang", models.CharField(max_length=2)),
                 ("created_at", models.DateTimeField()),
