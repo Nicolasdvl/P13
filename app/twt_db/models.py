@@ -116,6 +116,7 @@ class Tweets(models.Model):
                     }
                 )
         conversations["meta"] = {
+            "query": query,
             "count_tweets": tweets.count(),
             "count_conversations": len(conversations.keys()),
             "query_recurrence": tweets.filter(text__icontains=query).count(),
