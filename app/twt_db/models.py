@@ -62,35 +62,45 @@ class Tweets(models.Model):
         """
         Return conversations about query.
 
+        dict formated for json.dumps().
+
         conversations = {
-            conversation_id: [tweet, ...],
-            ...
+            conversation_id: {
+                tweets: [
+                    { ... },
+                ],
+                meta: { ... }
+            },
+            ...,
+            meta: { ... }
         }
         """
         conversations = {}
-        tweets = Tweets.objects.filter(
-            query=query
-        )  # .order_by("conversation_id")
+        tweets = Tweets.objects.filter(query=query)
+        list_conversations_id = tweets.values_list(
+            "conversation_id", flat=True
+        ).distinct()
         for tweet in tweets:
             if tweet.conversation_id not in conversations:
-
-                conversations[tweet.conversation_id] = [
-                    {
-                        "id": tweet.id,
-                        "author_id": str(tweet.author_id),
-                        "text": tweet.text,
-                        "lang": tweet.lang,
-                        "created_at": str(tweet.created_at),
-                        "public_metrics": tweet.public_metrics,
-                        "referenced_tweets_id": tweet.referenced_tweets_id,
-                        "referenced_tweets_type": tweet.referenced_tweets_type,
-                        "conversation_id": tweet.conversation_id,
-                        "in_reply_to_user_id": tweet.in_reply_to_user_id,
-                        "source": tweet.source,
-                    }
-                ]
+                conversations[tweet.conversation_id] = {
+                    "tweets": [
+                        {
+                            "id": tweet.id,
+                            "author_id": str(tweet.author_id),
+                            "text": tweet.text,
+                            "lang": tweet.lang,
+                            "created_at": str(tweet.created_at),
+                            "public_metrics": tweet.public_metrics,
+                            "referenced_tweets_id": tweet.referenced_tweets_id,
+                            "referenced_tweets_type": tweet.referenced_tweets_type,
+                            "conversation_id": tweet.conversation_id,
+                            "in_reply_to_user_id": tweet.in_reply_to_user_id,
+                            "source": tweet.source,
+                        }
+                    ],
+                }
             else:
-                conversations[tweet.conversation_id].append(
+                conversations[tweet.conversation_id]["tweets"].append(
                     {
                         "id": tweet.id,
                         "author_id": str(tweet.author_id),
@@ -105,4 +115,37 @@ class Tweets(models.Model):
                         "source": tweet.source,
                     }
                 )
+        conversations["meta"] = {
+            "count_tweets": tweets.count(),
+            "count_conversations": len(conversations.keys()),
+            "query_recurrence": tweets.filter(text__icontains=query).count(),
+            "earliest_date": str(
+                min(tweets.values_list("created_at", flat=True).distinct())
+            ),
+            "latest_date": str(
+                max(tweets.values_list("created_at", flat=True).distinct())
+            ),
+        }
+        for key in list_conversations_id:
+            conversations[key]["meta"] = {
+                "query_recurrence": tweets.filter(conversation_id=key)
+                .filter(text__icontains=query)
+                .count(),
+                "earliest_date": str(
+                    min(
+                        tweets.filter(conversation_id=key)
+                        .values_list("created_at", flat=True)
+                        .distinct()
+                    )
+                ),
+                "latest_date": str(
+                    max(
+                        tweets.filter(conversation_id=key)
+                        .values_list("created_at", flat=True)
+                        .distinct()
+                    )
+                ),
+                "count_tweets": len(conversations[key]["tweets"]),
+            }
+
         return conversations
