@@ -13,5 +13,21 @@ function toggle() {
         }
         bar.style.display = "none";
     };
+};
+
+function display_chart(div_id) {
+    let chart = document.getElementById(div_id);
+    let meta = document.getElementById(div_id + '_meta');
+    let btn = document.getElementById(div_id + '_btn');
+    if (chart.style.display == "none") {
+        chart.removeAttribute("style");
+        meta.removeAttribute("style");
+        btn.setAttribute("class", "font-medium text-xs text-blue-700");
+    }
+    else {
+        chart.style.display = "none";
+        meta.style.display = "none";
+        btn.setAttribute("class", "font-medium text-xs text-gray-600 dark:text-white");
+    };
 }
 
