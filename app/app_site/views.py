@@ -30,6 +30,7 @@ def index(request):
 
         conversations = db_tweets.get_conversations_about(query)
         context["conversations_json"] = json.dumps(conversations)
+        context["conversations"] = conversations
         return render(request, "index.html", context=context)
 
     if request.method == "GET":

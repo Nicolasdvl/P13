@@ -16,9 +16,12 @@ anychart.onDocumentReady(
             search.value = e.point.get("x");
             submit.click();
         });
+        let container = document.createElement('div');
+        container.className = "col-start-2 col-span-4 row-span-2"
         let div = document.createElement('div');
         div.id = "chartCloud";
-        document.body.append(div);
+        container.append(div);
+        document.getElementById("grid-head").append(container);
         chart.container("chartCloud");
         chart.draw();
     }
