@@ -17,7 +17,7 @@ anychart.onDocumentReady(
             submit.click();
         });
         let container = document.createElement('div');
-        container.className = "col-start-2 col-span-4 row-span-2"
+        container.className = "col-start-2 col-span-4 row-span-2 mb-24"
         let div = document.createElement('div');
         div.id = "chartCloud";
         container.append(div);
