@@ -11,34 +11,6 @@ jobs:
       max-parallel: 2
       matrix:
         python-version: [ 3.8, 3.9]
-        database-engine:
-          - django.db.backends.postgresql
-        database-name: 
-          - db_actions
-        database-password:
-          - postgres
-        database-user:
-          - postgres
-        database-host:
-          - 127.0.0.1
-        database-port:
-          - 5432
-  
-    services:
-        postgres:
-          image: postgres:latest
-          env:
-            POSTGRES_DB: ${{ matrix.database-name }}
-            POSTGRES_USER: ${{ matrix.database-user }}
-            POSTGRES_PASSWORD: ${{ matrix.database-password }}
-          ports:
-            - 5432:5432
-          # Set health checks to wait until postgres has started
-          options:
-            --health-cmd pg_isready
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 5
 
     steps:
       - uses: actions/checkout@v2.4.0
@@ -59,12 +31,8 @@ jobs:
           DEBUG: 1
           DJANGO_ALLOWED_HOSTS: localhost
           DJANGO_KEY: secret-key
-          SQL_ENGINE: ${{ matrix.database-engine }}
-          SQL-DATABASE: ${{ matrix.database-name }}
-          SQL_USER: ${{ matrix.database-user }}
-          SQL_PASSWORD: ${{ matrix.database-password }}
-          SQL_HOST: ${{ matrix.database-host }}
-          SQL_PORT: ${{ matrix.database-port }}
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
         run: |
           python app/manage.py migrate      
       - name: Run tests
@@ -72,12 +40,7 @@ jobs:
           DEBUG: 1
           DJANGO_ALLOWED_HOSTS: localhost
           DJANGO_KEY: secret-key
-          SQL_ENGINE: ${{ matrix.database-engine }}
-          SQL-DATABASE: ${{ matrix.database-name }}
-          SQL_USER: ${{ matrix.database-user }}
-          SQL_PASSWORD: ${{ matrix.database-password }}
-          SQL_HOST: ${{ matrix.database-host }}
-          SQL_PORT: ${{ matrix.database-port }}
-          CI: $CI
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
         run: |
           python app/manage.py app test
