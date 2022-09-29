@@ -22,7 +22,7 @@ function display_chart(div_id) {
     if (chart.style.display == "none") {
         chart.removeAttribute("style");
         meta.removeAttribute("style");
-        btn.setAttribute("class", "font-medium text-xs text-blue-700");
+        btn.setAttribute("class", "font-medium text-xs dark:text-blue-600");
     }
     else {
         chart.style.display = "none";
