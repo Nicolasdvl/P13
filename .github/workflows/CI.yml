@@ -43,4 +43,4 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
         run: |
-          python app/manage.py app test
+          python app/manage.py test app
