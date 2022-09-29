@@ -26,12 +26,6 @@ anychart.onDocumentReady(
     function drawNetwork() {
         const conversations = JSON.parse(JSON.parse(document.getElementById('conversations_json').textContent));
         let i = 0;
-        let div_meta_global = document.createElement('div');
-        div_meta_global.innerHTML = "<h2>Représentations des réseaux de tweets sur le sujet : " + conversations["meta"]["query"] + "</h2>";
-        div_meta_global.innerHTML += "<p> Enchantillon de " + conversations["meta"]["count_tweets"] + " tweets répartis sur " + conversations["meta"]["count_conversations"] + " conversations</p>"
-        div_meta_global.innerHTML += "<p>Tweet le plus récent : " + conversations["meta"]["latest_date"] + "</p>";
-        div_meta_global.innerHTML += "<p>Tweet le plus ancien : " + conversations["meta"]["earliest_date"] + "</p>";
-        document.body.append(div_meta_global);
         for (var key in conversations) {
             if (key != "meta") {
                 i++;
@@ -40,18 +34,14 @@ anychart.onDocumentReady(
                 var chart = anychart.graph(data);
                 chart.nodes().tooltip().format("Tweet {%id}");
                 chart.edges().tooltip().format("{%ref_type}");
-                chart.title("Conversation" + key);
+                chart.title("Conversation " + key);
                 let div = document.createElement('div');
                 div.id = "chartNetwork" + i;
-                document.body.append(div);
+                document.getElementById(key).append(div);
                 chart.container("chartNetwork" + i);
                 chart.draw();
-                let div_meta = document.createElement('div');
-                div_meta.innerHTML = "<h3> Représentation du réseau de tweets de la conversation " + key + "</h3>";
-                div_meta.innerHTML += "<p>Echantillon : " + conversation["meta"]["count_tweets"] + " tweets</p>";
-                div_meta.innerHTML += "<p>Tweet le plus récent : " + conversation["meta"]["latest_date"] + "</p>";
-                div_meta.innerHTML += "<p>Tweet le plus ancien : " + conversation["meta"]["earliest_date"] + "</p>";
-                document.body.append(div_meta);
+
+
 
             };
         };

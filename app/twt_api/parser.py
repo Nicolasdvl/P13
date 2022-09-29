@@ -23,7 +23,7 @@ class Parser:
 
     def get_fr_tweets_about(
         self, query: str, max_result: int = 10, start_time: datetime = None
-    ) -> list | tweepy.TweepyException:
+    ) -> list:
         """
         Return list of tweet object for a query.
 
@@ -47,7 +47,7 @@ class Parser:
         conversation_id,
         max_result: int = 100,
         start_time: datetime = None,
-    ) -> list | tweepy.TweepyException:
+    ) -> list:
         """
         Retrun a list of tweet object for a conversation.
 
