@@ -1,14 +1,25 @@
 from django.shortcuts import render
 from twt_db.models import Tweets
 from twt_api.parser import Parser
+from django.views import View
 import json
 
 
-def index(request):
-    context = {}
-    conversations = {}
+class Index(View):
+    def __init__(self):
+        self.context = {}
 
-    if request.method == "POST":
+    def get(self, request):
+        query_tags = Tweets.objects.values_list("query", flat=True).distinct()
+        cloud_tag_data = {
+            tag: Tweets.objects.filter(query=tag).count() for tag in query_tags
+        }
+
+        self.context["cloud_json"] = json.dumps(cloud_tag_data)
+        return render(request, "index.html", context=self.context)
+
+    def post(self, request):
+
         query = request.POST.get("q")
         db_tweets = Tweets()
         parser = Parser()
@@ -29,15 +40,6 @@ def index(request):
                             db_tweets.insert(conversation_tweet, query)
 
         conversations = db_tweets.get_conversations_about(query)
-        context["conversations_json"] = json.dumps(conversations)
-        context["conversations"] = conversations
-        return render(request, "index.html", context=context)
-
-    if request.method == "GET":
-        query_tags = Tweets.objects.values_list("query", flat=True).distinct()
-        cloud_tag_data = {
-            tag: Tweets.objects.filter(query=tag).count() for tag in query_tags
-        }
-
-        context["cloud_json"] = json.dumps(cloud_tag_data)
-        return render(request, "index.html", context=context)
+        self.context["conversations_json"] = json.dumps(conversations)
+        self.context["conversations"] = conversations
+        return render(request, "index.html", context=self.context)
