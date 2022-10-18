@@ -30,6 +30,20 @@ class Tweets(models.Model):
     def __str__(self):
         return f"tweet: {self.id}"
 
+    def meta_query(self) -> dict:
+        """
+        Return metadata about query field for tag cloud.
+
+        {
+            query_name : n_query_in_db,
+            ...
+        }
+        """
+        query_tags = Tweets.objects.values_list("query", flat=True).distinct()
+        return {
+            tag: Tweets.objects.filter(query=tag).count() for tag in query_tags
+        }
+
     def insert(self, tweet: object, query: str) -> None:
         """Insert tweet and author if not already exist."""
         try:  # Check if tweet already exist
