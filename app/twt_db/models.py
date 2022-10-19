@@ -64,6 +64,8 @@ class Tweets(models.Model):
                     "referenced_tweets"
                 ][0]["type"]
                 del tweet.data["referenced_tweets"]
+            # delete edit_history_tweet_ids default field
+            del tweet.data["edit_history_tweet_ids"]
             new_tweet = Tweets(**tweet.data)
             new_tweet.query = query
             new_tweet.save()
