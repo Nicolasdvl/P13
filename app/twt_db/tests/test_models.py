@@ -23,6 +23,9 @@ class TestModels(TestCase):
             "text": "this is a fake tweet",
             "created_at": "2022-09-14T15:09:59.000Z",
             "lang": "fr",
+            "edit_history_tweet_ids": [
+                987654321,
+            ],
         }
         self.tweet_from_tweepy = Tweet(self.tweet_data)
 
